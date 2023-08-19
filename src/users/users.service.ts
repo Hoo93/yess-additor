@@ -10,7 +10,7 @@ export class UsersService {
         { name: 'User B', email: 'dev@yess.io' },
     ];
 
-    createUser(createUserDto: CreateUserDto): User {
+    async createUser(createUserDto: CreateUserDto): Promise<User> {
         if (this.getUserByEmail(createUserDto.email)) {
             throw new Error(`'${createUserDto.email}' is already is use.`);
         }
@@ -18,19 +18,19 @@ export class UsersService {
         return createUserDto;
     }
 
-    getAllUsers() {
+    async getAllUsers() {
         return this.usersLocalStorage;
     }
 
-    getUserByEmail(email: string) {
+    async getUserByEmail(email: string) {
         return this.usersLocalStorage.find((user) => user.email === email);
     }
 
-    updateUser(email: string, updateUserDto: UpdateUserDto) {
+    async updateUser(email: string, updateUserDto: UpdateUserDto) {
         return `This action updates a #${email} user`;
     }
 
-    remove(id: number) {
+    async remove(id: number) {
         return `This action removes a #${id} user`;
     }
 }

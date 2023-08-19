@@ -17,22 +17,22 @@ export class UsersController {
     constructor(private readonly usersService: UsersService) {}
 
     @Post()
-    createUser(@Body() createUserDto: CreateUserDto) {
+    async createUser(@Body() createUserDto: CreateUserDto) {
         return this.usersService.createUser(createUserDto);
     }
 
     @Get()
-    getAllUsers() {
+    async getAllUsers() {
         return this.usersService.getAllUsers();
     }
 
     @Get(':email')
-    findOne(@Param('email') email: string) {
+    async findOne(@Param('email') email: string) {
         return this.usersService.getUserByEmail(email);
     }
 
     @Patch(':email')
-    update(
+    async update(
         @Param('email') email: string,
         @Body() updateUserDto: UpdateUserDto,
     ) {
@@ -40,7 +40,7 @@ export class UsersController {
     }
 
     @Delete(':email')
-    remove(@Param('email') email: string) {
+    async remove(@Param('email') email: string) {
         return this.usersService.remove(+email);
     }
 }

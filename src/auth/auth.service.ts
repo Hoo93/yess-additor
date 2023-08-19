@@ -1,6 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { UsersService } from 'src/users/users.service';
-import { Payload } from './jwt/jwt.payload';
+import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { UserAuthDto } from './dto/userAuth.dto';
 
@@ -20,6 +19,10 @@ export class AuthService {
             throw new UnauthorizedException(
                 `User with email ${userAuthDto.email} doesn't exist`,
             );
+        }
+
+        if (user.name !== userAuthDto.name) {
+            throw new UnauthorizedException('The user name does not match.');
         }
 
         return {
