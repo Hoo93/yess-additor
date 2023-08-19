@@ -6,12 +6,18 @@ import {
     Patch,
     Param,
     Delete,
+    UseGuards,
+    ValidationPipe,
+    UsePipes,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
 
 @Controller('user')
+@UseGuards(JwtAuthGuard)
+@UsePipes(ValidationPipe)
 export class UserController {
     constructor(private readonly userService: UserService) {}
 
@@ -26,7 +32,7 @@ export class UserController {
     }
 
     @Get(':email')
-    async findOne(@Param('email') email: string) {
+    async getUserByEmail(@Param('email') email: string) {
         return this.userService.getUserByEmail(email);
     }
 
