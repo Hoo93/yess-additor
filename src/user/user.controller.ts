@@ -7,28 +7,27 @@ import {
     Param,
     Delete,
 } from '@nestjs/common';
-import { UsersService } from './users.service';
+import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './entities/user.entity';
 
-@Controller('users')
-export class UsersController {
-    constructor(private readonly usersService: UsersService) {}
+@Controller('user')
+export class UserController {
+    constructor(private readonly userService: UserService) {}
 
     @Post()
     async createUser(@Body() createUserDto: CreateUserDto) {
-        return this.usersService.createUser(createUserDto);
+        return this.userService.createUser(createUserDto);
     }
 
     @Get()
     async getAllUsers() {
-        return this.usersService.getAllUsers();
+        return this.userService.getAllUsers();
     }
 
     @Get(':email')
     async findOne(@Param('email') email: string) {
-        return this.usersService.getUserByEmail(email);
+        return this.userService.getUserByEmail(email);
     }
 
     @Patch(':email')
@@ -36,11 +35,11 @@ export class UsersController {
         @Param('email') email: string,
         @Body() updateUserDto: UpdateUserDto,
     ) {
-        return this.usersService.updateUser(email, updateUserDto);
+        return this.userService.updateUser(email, updateUserDto);
     }
 
     @Delete(':email')
     async remove(@Param('email') email: string) {
-        return this.usersService.remove(+email);
+        return this.userService.remove(+email);
     }
 }

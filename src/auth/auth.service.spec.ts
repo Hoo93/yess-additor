@@ -1,24 +1,23 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
-import { UsersService } from '../users/users.service';
+import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { UserAuthDto } from './dto/userAuth.dto';
-import { User } from 'src/users/entities/user.entity';
+import { User } from 'src/user/entities/user.entity';
 import { UnauthorizedException } from '@nestjs/common';
-import { symlink } from 'fs';
 
 describe('AuthService', () => {
     let authService: AuthService;
-    let usersService: UsersService;
+    let userService: UserService;
     let jwtService: JwtService;
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
-            providers: [AuthService, UsersService, JwtService],
+            providers: [AuthService, UserService, JwtService],
         }).compile();
 
         authService = module.get<AuthService>(AuthService);
-        usersService = module.get<UsersService>(UsersService);
+        userService = module.get<UserService>(UserService);
         jwtService = module.get<JwtService>(JwtService);
     });
 
@@ -39,7 +38,7 @@ describe('AuthService', () => {
             };
 
             const spyGetUserByEmail = jest
-                .spyOn(usersService, 'getUserByEmail')
+                .spyOn(userService, 'getUserByEmail')
                 .mockResolvedValue(mockedUser);
 
             const spySign = jest
@@ -60,7 +59,7 @@ describe('AuthService', () => {
             };
 
             const spyGetUserByEmail = jest
-                .spyOn(usersService, 'getUserByEmail')
+                .spyOn(userService, 'getUserByEmail')
                 .mockResolvedValue(null);
 
             await expect(authService.validateUser(userAuthDto)).rejects.toThrow(
@@ -81,7 +80,7 @@ describe('AuthService', () => {
             };
 
             const spyGetUserByEmail = jest
-                .spyOn(usersService, 'getUserByEmail')
+                .spyOn(userService, 'getUserByEmail')
                 .mockResolvedValue(mockedUser);
 
             await expect(authService.validateUser(userAuthDto)).rejects.toThrow(
