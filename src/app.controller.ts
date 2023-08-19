@@ -1,12 +1,20 @@
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import {
+    Body,
+    Controller,
+    Get,
+    Post,
+    Request,
+    UseGuards,
+} from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { User } from './users/entities/user.entity';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+    constructor(private readonly authService: AuthService) {}
 
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
-  }
+    @Get()
+    sayHello() {
+        return 'Hello world';
+    }
 }
