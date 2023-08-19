@@ -1,34 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { DocService } from './doc.service';
-import { CreateDocDto } from './dto/create-doc.dto';
-import { UpdateDocDto } from './dto/update-doc.dto';
+import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
 
 @Controller('doc')
+@UseGuards(JwtAuthGuard)
 export class DocController {
-  constructor(private readonly docService: DocService) {}
+    constructor(private readonly docService: DocService) {}
 
-  @Post()
-  create(@Body() createDocDto: CreateDocDto) {
-    return this.docService.create(createDocDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.docService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.docService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDocDto: UpdateDocDto) {
-    return this.docService.update(+id, updateDocDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.docService.remove(+id);
-  }
+    @Post()
+    updateDocs(@Body() updateDocDto) {
+        // return this.docService.updateDocs(updateDocDto);
+    }
 }

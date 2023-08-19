@@ -12,6 +12,7 @@ export class UserService {
 
     async createUser(createUserDto: CreateUserDto): Promise<User> {
         const user = await this.getUserByEmail(createUserDto.email);
+        console.log(user);
         if (user) {
             throw new Error(`'${createUserDto.email}' is already is use.`);
         }

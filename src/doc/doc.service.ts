@@ -1,26 +1,68 @@
 import { Injectable } from '@nestjs/common';
-import { CreateDocDto } from './dto/create-doc.dto';
-import { UpdateDocDto } from './dto/update-doc.dto';
+import { Doc } from './entities/doc.entity';
+import { ChangeService } from 'src/change/change.service';
 
 @Injectable()
 export class DocService {
-  create(createDocDto: CreateDocDto) {
-    return 'This action adds a new doc';
-  }
+    constructor(private readonly changeService: ChangeService) {}
 
-  findAll() {
-    return `This action returns all doc`;
-  }
+    private readonly docs: Doc[] = [
+        {
+            version: 0,
+            content: 'This is my document.\nThis API is intended for coworking.',
+        },
+    ];
 
-  findOne(id: number) {
-    return `This action returns a #${id} doc`;
-  }
+    // 10번 문서를 업데이트 했는데
+    // 가장 최신 버전이 12번
+    // getRecentVersion = 11
+    // 10번 문서를 12버전까지 changeLog로 업데이트 해 내 현저 커서 구함
+    // 12버전 문서 가져와서 현재 내 커서 위치에서 deletion, insertion 실행하고 13버전으로 저장
+    // changeLog 에 12버전으로 로그 저장
 
-  update(id: number, updateDocDto: UpdateDocDto) {
-    return `This action updates a #${id} doc`;
-  }
+    updateDocs(version: number, currentCursorIndex: number, deletion: number, insertion: string) {
+        // 현재 버전에서 가장 최신 버전으로 업데이트 했을 때 커서의 위치
+        let updatedCursorIndex = this.getUpdatedCursorIndex(version, currentCursorIndex);
 
-  remove(id: number) {
-    return `This action removes a #${id} doc`;
-  }
+        const updatedContent = this.applyChange(updatedCursorIndex, deletion, insertion);
+
+        const updatedDoc = {
+            version: this.docs.length,
+            content: updatedContent,
+        };
+
+        this.docs.push(updatedDoc);
+        this.changeService.createChange(updatedCursorIndex, deletion, insertion);
+
+        return updatedDoc;
+    }
+
+    applyChange(cursorIndex: number, deletion: number, insertion: string) {
+        let updatedContent: string;
+        // order by createdAt DESC LIMIT 1;
+        const latestDocs = this.docs[-1];
+        if (cursorIndex - deletion <= 0) {
+            updatedContent = insertion + latestDocs.content.substring(cursorIndex);
+        } else {
+            updatedContent = latestDocs.content.substring(0, cursorIndex - deletion) + insertion + latestDocs.content.substring(cursorIndex);
+        }
+
+        return updatedContent;
+    }
+
+    getUpdatedCursorIndex(version: number, currentCursorIndex: number) {
+        let updatedCursorIndex = currentCursorIndex;
+
+        for (const change of this.changeService.getChangesAfter(version)) {
+            if (currentCursorIndex <= change.cursorIndex - change.deletion) {
+                continue;
+            }
+            if (currentCursorIndex < change.cursorIndex) {
+                updatedCursorIndex = change.cursorIndex - change.deletion;
+                if (updatedCursorIndex < 0) updatedCursorIndex = 0;
+            }
+        }
+
+        return updatedCursorIndex;
+    }
 }

@@ -1,10 +1,11 @@
-import { IsNumber, IsString, Min } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class Doc {
     @IsNumber()
-    @Min(0)
+    @IsNotEmpty()
     version: number;
 
+    @IsNotEmpty()
     @IsString()
-    content;
+    content: string;
 }

@@ -1,26 +1,43 @@
 import { Injectable } from '@nestjs/common';
 import { CreateChangeDto } from './dto/create-change.dto';
 import { UpdateChangeDto } from './dto/update-change.dto';
+import { Change } from './entities/change.entity';
 
 @Injectable()
 export class ChangeService {
-  create(createChangeDto: CreateChangeDto) {
-    return 'This action adds a new change';
-  }
+    private readonly changes: Change[] = [
+        {
+            version: 0,
+            cursorIndex: 10,
+            deletion: 2,
+            insertion: 'XYZ',
+        },
+    ];
 
-  findAll() {
-    return `This action returns all change`;
-  }
+    createChange(cursorIndex: number, deletion: number, insertion: string) {
+        const change = {
+            version: this.changes.length,
+            cursorIndex: cursorIndex,
+            deletion: deletion,
+            insertion: insertion,
+        };
 
-  findOne(id: number) {
-    return `This action returns a #${id} change`;
-  }
+        this.changes.push(change);
+        return change;
+    }
 
-  update(id: number, updateChangeDto: UpdateChangeDto) {
-    return `This action updates a #${id} change`;
-  }
+    getRecentChangeVersion() {
+        return this.changes.length - 1;
+    }
 
-  remove(id: number) {
-    return `This action removes a #${id} change`;
-  }
+    getChangesAfter(version: number) {
+        if (version === 0) {
+            return this.changes;
+        }
+        return this.changes.splice(version - 1);
+    }
+
+    getChangeByVersion(version: number) {
+        return this.changes[version];
+    }
 }
