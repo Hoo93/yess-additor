@@ -1,43 +1,31 @@
 import { Injectable } from '@nestjs/common';
-import { CreateChangeDto } from './dto/create-change.dto';
-import { UpdateChangeDto } from './dto/update-change.dto';
 import { Change } from './entities/change.entity';
+import { changesMemory } from './change.memory';
 
 @Injectable()
 export class ChangeService {
-    private readonly changes: Change[] = [
-        {
-            version: 0,
-            cursorIndex: 10,
-            deletion: 2,
-            insertion: 'XYZ',
-        },
-    ];
+    async getAllChanges() {
+        return changesMemory;
+    }
 
-    createChange(cursorIndex: number, deletion: number, insertion: string) {
-        const change = {
-            version: this.changes.length,
-            cursorIndex: cursorIndex,
-            deletion: deletion,
-            insertion: insertion,
-        };
-
-        this.changes.push(change);
+    async createChange(cursorIndex: number, deletion: number, insertion: string) {
+        const change = new Change(changesMemory.length, cursorIndex, deletion, insertion);
+        changesMemory.push(change);
         return change;
     }
 
-    getRecentChangeVersion() {
-        return this.changes.length - 1;
+    async getRecentChangeVersion() {
+        return changesMemory.length - 1;
     }
 
-    getChangesAfter(version: number) {
+    async getChangesAfter(version: number) {
         if (version === 0) {
-            return this.changes;
+            return changesMemory;
         }
-        return this.changes.splice(version - 1);
+        return changesMemory.splice(version - 1);
     }
 
-    getChangeByVersion(version: number) {
-        return this.changes[version];
+    async getChangeByVersion(version: number) {
+        return changesMemory[version];
     }
 }

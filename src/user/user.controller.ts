@@ -1,15 +1,4 @@
-import {
-    Controller,
-    Get,
-    Post,
-    Body,
-    Patch,
-    Param,
-    Delete,
-    UseGuards,
-    ValidationPipe,
-    UsePipes,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, ValidationPipe, UsePipes } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -34,18 +23,5 @@ export class UserController {
     @Get(':email')
     async getUserByEmail(@Param('email') email: string) {
         return this.userService.getUserByEmail(email);
-    }
-
-    @Patch(':email')
-    async update(
-        @Param('email') email: string,
-        @Body() updateUserDto: UpdateUserDto,
-    ) {
-        return this.userService.updateUser(email, updateUserDto);
-    }
-
-    @Delete(':email')
-    async remove(@Param('email') email: string) {
-        return this.userService.remove(+email);
     }
 }

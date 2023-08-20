@@ -7,6 +7,6 @@ import { ChangeModule } from 'src/change/change.module';
 @Module({
     imports: [ChangeModule],
     controllers: [DocController],
-    providers: [DocService, ChangeService],
+    providers: [DocService],
 })
 export class DocModule {}

@@ -1,11 +1,11 @@
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class Doc {
-    @IsNumber()
-    @IsNotEmpty()
     version: number;
-
-    @IsNotEmpty()
-    @IsString()
     content: string;
+
+    constructor(version: number, content: string) {
+        this.version = version;
+        this.content = content;
+    }
 }
